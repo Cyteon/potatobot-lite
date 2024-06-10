@@ -20,7 +20,6 @@ module.exports = (client) => {
                 } else {
                     client.commandArray.push(command.data);
                 }
-
                 console.log(`Command ${command.data.name} loaded`);
             }
         }
