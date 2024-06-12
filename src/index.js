@@ -17,6 +17,7 @@
 */
 
 const { Client, GatewayIntentBits, EmbedBuilder, PermissionsBitField, Permissions, MessageManager, Embed, Collection } = require(`discord.js`);
+const fetch = require('node-fetch');
 const fs = require('fs');
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] }); 
 
@@ -28,6 +29,17 @@ const functions = fs.readdirSync("./src/functions").filter(file => file.endsWith
 const eventFiles = fs.readdirSync("./src/events").filter(file => file.endsWith(".js"));
 const commandFolders = fs.readdirSync("./src/commands");
 
+async function pushStatus() {
+    if (process.env.uptime_kuma_push == "NONE") {
+        return
+    }
+    try {
+        await fetch(process.env.uptime_kuma_push)
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 (async () => {
     for (file of functions) {
         require(`./functions/${file}`)(client);
@@ -35,5 +47,7 @@ const commandFolders = fs.readdirSync("./src/commands");
     client.handleEvents(eventFiles, "./src/events");
     client.handleCommands(commandFolders, "./src/commands");
     client.login(process.env.token)
+
+    setInterval(pushStatus, 60 * 1000);
 })();
 

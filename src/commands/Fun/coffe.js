@@ -18,50 +18,20 @@
 
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
-const { Groq } = require('groq-sdk');
-
-const groq = new Groq({ apiKey: process.env.groq_api_1 });
-
-const to_replace = ["@everyone", "@here", "nigga", "nigger"];
-
 module.exports = {
     data: {
-        name: "ai",
-        description: "Ask an AI something",
+        name: "coffe",
+        description: "Replies with a random coffe picture!",
         "integration_types":  [1],
-        "contexts": [0, 1, 2],
-        options: [
-            {
-                name: 'prompt',
-                type: 3,
-                description: 'The prompt to ask the AI',
-                required: true
-            }
-        ]
+        "contexts": [0, 1, 2]
     },
     async execute(interaction) {
-        await interaction.deferReply();
+        response = await fetch('https://coffee.alexflipnote.dev/random.json');
 
-        response = await groq.chat.completions.create({
-            model: "llama3-70b-8192",
-            messages: [
-                {
-                    role: "system",
-                    content: "Reply in less than 1k characters"
-                },
-                {
-                    role: "user",
-                    content: interaction.options.getString('prompt')
-                }
-            ]
-        });
+        json = await response.json();
 
-        message = response.choices[0].message.content
+        imgurl = json.file;
 
-        to_replace.forEach(word => {
-            message = message.replace(word, "[FILTERED]");
-        })
-
-        await interaction.editReply({ content: message, ephemral: false});
+        await interaction.reply({ content: imgurl, ephemeral: false});
     }
 }
