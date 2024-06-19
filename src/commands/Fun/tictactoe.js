@@ -127,17 +127,6 @@ module.exports = {
                     [2, 4, 6]
                 ]
 
-                for (condition of win_conditions){
-                    if (game.board[condition[0]] === game.board[condition[1]] && game.board[condition[1]] === game.board[condition[2]] && game.board[condition[0]] !== "~"){
-                        game.winner = game.board[condition[0]];
-
-                        if (game.winner === "X"){
-                            await interaction.editReply({ content: "You win!", components: buttonRows, ephemeral: false });
-                            return;
-                        }
-                    }
-                }
-
                 function getWinningMove(board, player) {
                     for (let condition of win_conditions) {
                         let values = condition.map(i => board[i]);
@@ -225,7 +214,10 @@ module.exports = {
                     if (game.board[condition[0]] === game.board[condition[1]] && game.board[condition[1]] === game.board[condition[2]] && game.board[condition[0]] !== "~"){
                         game.winner = game.board[condition[0]];
 
-                        if (game.winner === "O"){
+                        if (game.winner === "X"){
+                            await interaction.editReply({ content: "You win!", components: buttonRows, ephemeral: false });
+                            return;
+                        } else if (game.winner === "O"){
                             await interaction.editReply({ content: "AI win!", components: buttonRows, ephemeral: false });
                             return;
                         }
