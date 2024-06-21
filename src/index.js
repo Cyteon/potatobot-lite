@@ -36,7 +36,7 @@ async function pushStatus() {
     try {
         await fetch(process.env.uptime_kuma_push)
     } catch (error) {
-        console.error(error);
+        
     }
 }
 
