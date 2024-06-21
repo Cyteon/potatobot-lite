@@ -16,8 +16,6 @@
     SOFTWARE.
 */
 
-const { SlashCommandBuilder } = require('@discordjs/builders');
-
 module.exports = {
     data: {
         name: "coffee",

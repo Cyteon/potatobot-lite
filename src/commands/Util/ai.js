@@ -16,8 +16,6 @@
     SOFTWARE.
 */
 
-const { SlashCommandBuilder } = require('@discordjs/builders');
-
 const { Groq } = require('groq-sdk');
 
 const groq = new Groq({ apiKey: process.env.groq_api_1 });
