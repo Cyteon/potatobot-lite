@@ -40,7 +40,9 @@ module.exports = {
         var result
 
         try {
-            result = eval(code)
+            result = await eval(code)
+
+            if (typeof result === "object") result = "```json\n" + JSON.stringify(result) + "```";
 
             await interaction.editReply({ content: result.toString(), ephemral: false});
 
