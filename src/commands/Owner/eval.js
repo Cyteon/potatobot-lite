@@ -34,18 +34,20 @@ module.exports = {
     async execute(interaction) {
         if (interaction.user.id !== "871722786006138960") return interaction.reply({ content: 'Unexpected F at line 69, character 420', ephemral: true});
 
+        await interaction.deferReply()
+
         var code = interaction.options.getString('code')
         var result
 
         try {
             result = eval(code)
 
-            await interaction.reply({ content: result, ephemral: false});
+            await interaction.editReply({ content: result.toString(), ephemral: false});
 
         } catch (error) {
             result = error
 
-            await interaction.reply({ content: error.toString(), ephemral: false});
+            await interaction.editReply({ content: error.toString(), ephemral: false});
 
         }
 
