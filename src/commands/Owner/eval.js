@@ -39,10 +39,15 @@ module.exports = {
 
         try {
             result = eval(code)
+
+            await interaction.reply({ content: result, ephemral: false});
+
         } catch (error) {
             result = error
+
+            await interaction.reply({ content: error.toString(), ephemral: false});
+
         }
 
-        await interaction.reply({ content: result.toString(), ephemral: false});
     }
 }
