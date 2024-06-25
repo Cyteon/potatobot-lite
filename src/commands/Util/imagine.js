@@ -20,7 +20,7 @@ const { AttachmentBuilder } = require("discord.js");
 
 function isNSFW(text) {
     const nsfwRegex =
-        /\b(w+a+i+f+u+|n+u+d+e+|p+[o0]+r+n+|s+e+x+|h+e+n+t+a+i+|x{3,}|b[o0]{2,}bs?|[0o]rg[ay]|[ae]r[o0]ti[ck]|f[u\*]+c?k+|sh[i1]+t+|d[i1]+c?k+|p+[u\*]+s+y+|v+[a@]+g+[i1]+n+[a@]+|p+e+n+[i1]+s+|[a@]+s+s+(?!(?:ist|um|et))|b+[i1]+t+ch+|c+[u\*]+n+t+|j+[i1]+z+z+|t+[i1]+t+(?:t+y+|[i1]+e+s+)?|f+[a@]+p+|m+[i1]+l+f+|d+[i1]+l+d+[o0]+|c+[o0]+c+k+|k+[i1]+n+k+|b+d+s+m+)\b/i;
+        /\b(h[o0]+t+|w[a@]+i+f+u+|n[u*]+d+e+|p[o0]+r+n+|s+e+x+|h+e+n+t+a+i+|x{3,}|b[o0]{2,}bs?|[0o]rg[a@]y|[a@]r[o0]ti[c*k]|f[u*]+c?k+|sh[i1]+t+|d[i1]+c?k+|p[u*]+s+y+|v[a@]+g[i1]+n[a@]+|p+e+n[i1]+s+|[a@]+s+s+(?!(?:ist|um|et))|b[i1]+t+c+h+|c[u*]+n+t+|j[i1]+z+z+|t[i1]+t+(?:t+y+|[i1]+e+s+)?|f[a@]+p+|m[i1]+l+f+|d[i1]+l+d[o0]+|c[o0]+c+k+|k[i1]+n+k+|b+d+s+m+|[s$]+[l1]+[u*]+[t7]+|[pP]+[a@]+[tT]+|[l1]+[e3]+[wW]+[dD]+)\b/i;
 
     return nsfwRegex.test(text);
 }
@@ -105,10 +105,12 @@ module.exports = {
             interaction.options.getString("negative-prompt");
         const api_key = process.env.hf_api_key;
 
-        if (isNSFW(prompt) && interaction.channel != null) {
-            if (!interaction.channel.nsfw && !interaction.guild.nsfw) {
+        console.log(interaction);
+
+        if (isNSFW(prompt)) {
+            if (interaction.guildId != null) {
                 return await interaction.editReply(
-                    "The prompt you provided is NSFW. Please use this command in an NSFW channel or DM.",
+                    "The prompt you provided is NSFW. Please use this command in an DM.",
                 );
             }
         }
