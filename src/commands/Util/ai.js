@@ -16,26 +16,25 @@
     SOFTWARE.
 */
 
-const { Groq } = require('groq-sdk');
+const { Groq } = require("groq-sdk");
 
 const groq = new Groq({ apiKey: process.env.groq_api_1 });
-
 const to_replace = ["@everyone", "@here", "nigga", "nigger"];
 
 module.exports = {
     data: {
         name: "ai",
         description: "Ask an AI something",
-        "integration_types":  [1],
-        "contexts": [0, 1, 2],
+        integration_types: [1],
+        contexts: [0, 1, 2],
         options: [
             {
-                name: 'prompt',
+                name: "prompt",
                 type: 3,
-                description: 'The prompt to ask the AI',
-                required: true
-            }
-        ]
+                description: "The prompt to ask the AI",
+                required: true,
+            },
+        ],
     },
     async execute(interaction) {
         await interaction.deferReply();
@@ -45,21 +44,21 @@ module.exports = {
             messages: [
                 {
                     role: "system",
-                    content: "Reply in less than 1k characters"
+                    content: "Reply in less than 1k characters",
                 },
                 {
                     role: "user",
-                    content: interaction.options.getString('prompt')
-                }
-            ]
+                    content: interaction.options.getString("prompt"),
+                },
+            ],
         });
 
-        message = response.choices[0].message.content
+        message = response.choices[0].message.content;
 
-        to_replace.forEach(word => {
+        to_replace.forEach((word) => {
             message = message.replace(word, "[FILTERED]");
-        })
+        });
 
-        await interaction.editReply({ content: message, ephemral: false});
-    }
-}
+        await interaction.editReply({ content: message, ephemral: false });
+    },
+};

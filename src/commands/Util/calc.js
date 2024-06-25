@@ -16,28 +16,32 @@
     SOFTWARE.
 */
 
-const { evaluate } = require('mathjs')
+const { evaluate } = require("mathjs");
 
 module.exports = {
     data: {
+        
         name: "calc",
         description: "Calculate something",
-        "integration_types":  [1],
-        "contexts": [0, 1, 2],
+        integration_types: [1],
+        contexts: [0, 1, 2],
         options: [
             {
-                name: 'expression',
+                name: "expression",
                 type: 3,
-                description: 'What to caclculate',
-                required: true
-            }
-        ]
+                description: "What to caclculate",
+                required: true,
+            },
+        ],
     },
     async execute(interaction) {
-        var expression = interaction.options.getString('expression')
+        var expression = interaction.options.getString("expression");
 
-        var result = evaluate(expression)
+        var result = evaluate(expression);
 
-        await interaction.reply({ content: result.toString(), ephemral: false});
-    }
-}
+        await interaction.reply({
+            content: result.toString(),
+            ephemral: false,
+        });
+    },
+};
