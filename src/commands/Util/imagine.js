@@ -15,14 +15,36 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 */
-
 const { AttachmentBuilder } = require("discord.js");
+
+const additionalWordsURL =
+    "https://raw.githubusercontent.com/LDNOOBW/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words/master/en";
+let additionalWords = [];
+
+async function fetchAdditionalWords() {
+    try {
+        const fetch = (await import("node-fetch")).default;
+        const response = await fetch(additionalWordsURL);
+        const text = await response.text();
+        additionalWords = text
+            .split("\n")
+            .map((word) => word.trim().toLowerCase())
+            .filter(Boolean);
+    } catch (error) {
+        console.error("Failed to fetch additional words list:", error);
+    }
+}
+
+fetchAdditionalWords();
 
 function isNSFW(text) {
     const nsfwRegex =
-        /\b(h[o0]+t+|w[a@]+i+f+u+|n[u*]+d+e+|p[o0]+r+n+|s+e+x+|h+e+n+t+a+i+|n+a+k+e+d|n+u+d+e|x{3,}|b[o0]{2,}bs?|[0o]rg[a@]y|[a@]r[o0]ti[c*k]|f[u*]+c?k+|sh[i1]+t+|d[i1]+c?k+|p[u*]+s+y+|v[a@]+g[i1]+n[a@]+|p+e+n[i1]+s+|[a@]+s+s+(?!(?:ist|um|et))|b[i1]+t+c+h+|c[u*]+n+t+|j[i1]+z+z+|t[i1]+t+(?:t+y+|[i1]+e+s+)?|f[a@]+p+|m[i1]+l+f+|d[i1]+l+d[o0]+|c[o0]+c+k+|k[i1]+n+k+|b+d+s+m+|[s$]+[l1]+[u*]+[t7]+|[pP]+[a@]+[tT]+|[l1]+[e3]+[wW]+[dD]+)\b/i;
-
-    return nsfwRegex.test(text);
+        /\b(h[o0]+t+|w[a@]+i+f+u+|n[u*]+d+e+|p[o0]+r+n+|s+e+x+|h+e+n+t+a+i+|x{3,}|b[o0]{2,}bs?|[0o]rg[a@]y|[a@]r[o0]ti[c*k]|f[u*]+c?k+|sh[i1]+t+|d[i1]+c?k+|p[u*]+s+y+|v[a@]+g[i1]+n[a@]+|p+e+n[i1]+s+|[a@]+s+s+(?!(?:ist|um|et))|b[i1]+t+c+h+|c[u*]+n+t+|j[i1]+z+z+|t[i1]+t+(?:t+y+|[i1]+e+s+)?|f[a@]+p+|m[i1]+l+f+|d[i1]+l+d[o0]+|c[o0]+c+k+|k[i1]+n+k+|b+d+s+m+|[s$]+[l1]+[u*]+[t7]+|[pP]+[a@]+[tT]+|[l1]+[e3]+[wW]+[dD]+)\b/i;
+    if (nsfwRegex.test(text)) {
+        return true;
+    }
+    const lowerText = text.toLowerCase();
+    return additionalWords.some((word) => lowerText.includes(word));
 }
 
 module.exports = {
@@ -41,6 +63,14 @@ module.exports = {
                     {
                         name: "Stable Diffusion XL Base 1.0",
                         value: "stabilityai/stable-diffusion-xl-base-1.0",
+                    },
+                    {
+                        name: "Chilloutmix NiPrunedFp32Fix",
+                        value: "emilianJR/chilloutmix_NiPrunedFp32Fix",
+                    },
+                    {
+                        name: "Dreamshaper XL V2 Turbo",
+                        value: "Lykon/dreamshaper-xl-v2-turbo",
                     },
                     {
                         name: "Mobius",
@@ -93,6 +123,7 @@ module.exports = {
                 type: 4,
                 description:
                     "Steps AI will take (higher = better quality but slower) (experimental)",
+                required: false,
             },
         ],
     },
@@ -102,85 +133,72 @@ module.exports = {
         const model = interaction.options.getString("model");
         const prompt = interaction.options.getString("prompt");
         const negative_prompt =
-            interaction.options.getString("negative-prompt");
+            interaction.options.getString("negative-prompt") || "";
+        const width = interaction.options.getInteger("width");
+        const height = interaction.options.getInteger("height");
+        const steps = interaction.options.getInteger("steps");
         const api_key = process.env.hf_api_key;
 
-        if (isNSFW(prompt)) {
-            if (interaction.guildId != null) {
-                return await interaction.editReply(
-                    "The prompt you provided is NSFW. Please use this command in an DM.",
-                );
-            }
+        if (isNSFW(prompt) && interaction.guildId != null) {
+            return await interaction.editReply(
+                "The prompt you provided is NSFW. Please use this command in an NSFW channel or DM.",
+            );
         }
-
-        const response = await fetch(
-            "https://api-inference.huggingface.co/models/" + model,
-            {
-                headers: {
-                    Authorization: "Bearer " + api_key,
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                    responseType: "arraybuffer",
-                },
-                method: "POST",
-                body: JSON.stringify({
-                    inputs: prompt,
-                    parameters: {
-                        negative_prompt:
-                            negative_prompt != null ? negative_prompt : "",
-                        width: interaction.options.getInteger("width"),
-                        height: interaction.options.getInteger("height"),
-                        inference_steps:
-                            interaction.options.getInteger("steps"),
-                    },
-                    options: {
-                        use_cache: false,
-                    },
-                }),
-            },
-        );
-
-        if ((await response.status) != 200) {
-            const text = await response.text();
-            console.error(response.status.toString() + text);
-
-            const json = JSON.parse(text);
-
-            switch (response.status) {
-                case 503:
-                    var est = Math.floor(json.estimated_time);
-                    var current_unix = Math.floor(Date.now() / 1000);
-                    est = parseInt(current_unix + est);
-
-                    return await interaction.editReply({
-                        content: `The model is currently loading. Try another model or estaminated to work <t:${est}:R>.`,
-                    });
-                default:
-                    return await interaction.editReply({
-                        content: "An error occurred. Please try again later.",
-                    });
-            }
-        }
-
-        const blob = await response.blob();
-        const buffer = Buffer.from(await blob.arrayBuffer());
-        const attach = new AttachmentBuilder(buffer, { name: "result.jpeg" });
 
         try {
-            await interaction.editReply({
-                files: [attach],
+            const fetch = (await import("node-fetch")).default;
+            const response = await fetch(
+                `https://api-inference.huggingface.co/models/${model}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${api_key}`,
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                    },
+                    method: "POST",
+                    body: JSON.stringify({
+                        inputs: prompt,
+                        parameters: {
+                            negative_prompt: negative_prompt,
+                            width: width,
+                            height: height,
+                            inference_steps: steps,
+                        },
+                        options: { use_cache: false },
+                    }),
+                },
+            );
+
+            if (response.status !== 200) {
+                const text = await response.text();
+                const json = JSON.parse(text);
+                if (response.status === 503) {
+                    const est = Math.floor(
+                        Date.now() / 1000 + json.estimated_time,
+                    );
+                    return await interaction.editReply(
+                        `The model is currently loading. Try another model, estimated to work <t:${est}:R>.`,
+                    );
+                } else {
+                    return await interaction.editReply(
+                        "An error occurred. Please try again later.",
+                    );
+                }
+            }
+
+            const buffer = Buffer.from(await response.arrayBuffer());
+            const attach = new AttachmentBuilder(buffer, {
+                name: "result.jpeg",
             });
+
+            await interaction.editReply({ files: [attach] });
         } catch (error) {
-            switch (error.code) {
-                case 20009:
-                    return await interaction.editReply({
-                        content:
-                            "Explicit content cannot be sent to the desired recipient(s)",
-                    });
-                default:
-                    return await interaction.editReply({
-                        content: "An unknown error occurred",
-                    });
+            if (error.code === 20009) {
+                await interaction.editReply(
+                    "Explicit content cannot be sent to the desired recipient(s)",
+                );
+            } else {
+                await interaction.editReply("An unknown error occurred");
             }
         }
     },
