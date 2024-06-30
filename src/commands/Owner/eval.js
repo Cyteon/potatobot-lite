@@ -32,7 +32,8 @@ module.exports = {
         ]
     },
     async execute(interaction) {
-        if (interaction.user.id !== "871722786006138960") return interaction.reply({ content: 'Unexpected F at line 69, character 420', ephemral: true});
+        
+        if (interaction.user.id !== "871722786006138960") return interaction.reply({ content: 'nuh uh not on my watch you arent cyteon', ephemral: true});
 
         await interaction.deferReply()
 
