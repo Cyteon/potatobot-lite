@@ -20,39 +20,46 @@ module.exports = {
     data: {
         name: "eval",
         description: "shush",
-        "integration_types":  [1],
-        "contexts": [0, 1, 2],
+        integration_types: [1],
+        contexts: [0, 1, 2],
         options: [
             {
-                name: 'code',
+                name: "code",
                 type: 3,
-                description: ':)',
-                required: true
-            }
-        ]
+                description: ":)",
+                required: true,
+            },
+        ],
     },
     async execute(interaction) {
-        
-        if (interaction.user.id !== "871722786006138960") return interaction.reply({ content: 'nuh uh not on my watch you arent cyteon', ephemral: true});
+        if (interaction.user.id !== "871722786006138960")
+            return interaction.reply({
+                content: "nuh uh not on my watch, you arent cyteon :C",
+                ephemral: true,
+            });
 
-        await interaction.deferReply()
+        await interaction.deferReply();
 
-        var code = interaction.options.getString('code')
-        var result
+        var code = interaction.options.getString("code");
+        var result;
 
         try {
-            result = await eval(code)
+            result = await eval(code);
 
-            if (typeof result === "object") result = "```json\n" + JSON.stringify(result) + "```";
+            if (typeof result === "object")
+                result = "```json\n" + JSON.stringify(result) + "```";
 
-            await interaction.editReply({ content: result.toString(), ephemral: false});
-
+            await interaction.editReply({
+                content: result.toString(),
+                ephemral: false,
+            });
         } catch (error) {
-            result = error
+            result = error;
 
-            await interaction.editReply({ content: error.toString(), ephemral: false});
-
+            await interaction.editReply({
+                content: error.toString(),
+                ephemral: false,
+            });
         }
-
-    }
-}
+    },
+};
