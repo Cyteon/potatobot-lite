@@ -17,10 +17,10 @@ To set up and run the bot locally, follow these steps:
 
 ```sh
 # Clone the repository
-git clone <your-repository-url>
+git clone https://github.com/Cyteon/potatobot-lite
 
 # Navigate to the project directory
-cd your-project-directory
+cd potatobot-lite
 
 # Install the dependencies
 npm install
