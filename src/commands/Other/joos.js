@@ -25,7 +25,7 @@ module.exports = {
     },
     async execute(interaction) {
         await interaction.reply({
-            content: "<:joos:1254878760218529873>",
+            content: "<:joos:1257138460255588495>",
             ephemral: false,
         });
     },
