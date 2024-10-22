@@ -65,16 +65,16 @@ module.exports = {
                         value: "stabilityai/stable-diffusion-xl-base-1.0",
                     },
                     {
-                        name: "Chilloutmix NiPrunedFp32Fix",
-                        value: "emilianJR/chilloutmix_NiPrunedFp32Fix",
+                        name: "stable-diffusion-v1-4",
+                        value: "CompVis/stable-diffusion-v1-4",
                     },
                     {
                         name: "Dreamshaper XL V2 Turbo",
                         value: "Lykon/dreamshaper-xl-v2-turbo",
                     },
                     {
-                        name: "Mobius",
-                        value: "Corcelio/mobius",
+                        name: "IterComp",
+                        value: "comin/IterComp",
                     },
                     {
                         name: "Fluently XL Final",
@@ -99,12 +99,6 @@ module.exports = {
                 type: 3,
                 description: "The prompt to ask the AI",
                 required: true,
-            },
-            {
-                name: "negative-prompt",
-                type: 3,
-                description: "Negative prompt parameter",
-                required: false,
             },
             {
                 name: "width",
@@ -132,8 +126,6 @@ module.exports = {
 
         const model = interaction.options.getString("model");
         const prompt = interaction.options.getString("prompt");
-        const negative_prompt =
-            interaction.options.getString("negative-prompt") || "";
         const width = interaction.options.getInteger("width");
         const height = interaction.options.getInteger("height");
         const steps = interaction.options.getInteger("steps");
@@ -159,7 +151,6 @@ module.exports = {
                     body: JSON.stringify({
                         inputs: prompt,
                         parameters: {
-                            negative_prompt: negative_prompt,
                             width: width,
                             height: height,
                             inference_steps: steps,
@@ -180,6 +171,7 @@ module.exports = {
                         `The model is currently loading. Try another model, estimated to work <t:${est}:R>.`,
                     );
                 } else {
+                    console.log(json);
                     return await interaction.editReply(
                         "An error occurred. Please try again later.",
                     );
