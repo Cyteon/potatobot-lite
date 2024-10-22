@@ -16,26 +16,28 @@
     SOFTWARE.
 */
 
-
 module.exports = {
     data: {
         name: "roll",
         description: "Roll a number of your choice",
-        "integration_types":  [1],
-        "contexts": [0, 1, 2],
+        integration_types: [0, 1],
+        contexts: [0, 1, 2],
         options: [
             {
-                name: 'dice',
+                name: "dice",
                 type: 4,
-                description: 'The number of on the dice',
-                required: true
-            }
-        ]
+                description: "The number of on the dice",
+                required: true,
+            },
+        ],
     },
     async execute(interaction) {
-        var dice = interaction.options.getInteger('dice')
-        var number = Math.floor(Math.random() * dice) + 1
+        var dice = interaction.options.getInteger("dice");
+        var number = Math.floor(Math.random() * dice) + 1;
 
-        await interaction.reply({ content: number.toString(), ephemral: false});
-    }
-}
+        await interaction.reply({
+            content: number.toString(),
+            ephemral: false,
+        });
+    },
+};

@@ -20,16 +20,16 @@ module.exports = {
     data: {
         name: "coffee",
         description: "Replies with a random coffee picture!",
-        "integration_types":  [1],
-        "contexts": [0, 1, 2]
+        integration_types: [0, 1],
+        contexts: [0, 1, 2],
     },
     async execute(interaction) {
-        response = await fetch('https://coffee.alexflipnote.dev/random.json');
+        response = await fetch("https://coffee.alexflipnote.dev/random.json");
 
         json = await response.json();
 
         imgurl = json.file;
 
-        await interaction.reply({ content: imgurl, ephemeral: false});
-    }
-}
+        await interaction.reply({ content: imgurl, ephemeral: false });
+    },
+};

@@ -20,10 +20,9 @@ const { evaluate } = require("mathjs");
 
 module.exports = {
     data: {
-        
         name: "calc",
         description: "Calculate something",
-        integration_types: [1],
+        integration_types: [0, 1],
         contexts: [0, 1, 2],
         options: [
             {

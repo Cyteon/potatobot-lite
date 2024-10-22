@@ -25,7 +25,7 @@ module.exports = {
     data: {
         name: "ai",
         description: "Ask an AI something",
-        integration_types: [1],
+        integration_types: [0, 1],
         contexts: [0, 1, 2],
         options: [
             {

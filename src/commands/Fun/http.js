@@ -20,7 +20,7 @@ module.exports = {
     data: {
         name: "http",
         description: "Replies with a cute cat picture representing a http code!",
-        "integration_types":  [1],
+        "integration_types":  [0, 1],
         "contexts": [0, 1, 2],
         options: [
             {

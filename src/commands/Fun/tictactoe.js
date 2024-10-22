@@ -23,7 +23,7 @@ module.exports = {
     data: {
         name: "tictactoe",
         description: "Play tictactoe",
-        integration_types: [1],
+        integration_types: [0, 1],
         contexts: [0, 1, 2],
         buttons: [
             [

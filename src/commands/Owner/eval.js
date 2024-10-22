@@ -20,7 +20,7 @@ module.exports = {
     data: {
         name: "eval",
         description: "shush",
-        integration_types: [1],
+        integration_types: [0, 1],
         contexts: [0, 1, 2],
         options: [
             {
