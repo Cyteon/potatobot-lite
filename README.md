@@ -1,6 +1,7 @@
-# PotatoBot
+# PotatoBot Lite
 
-Welcome to PotatoBot! This bot is a versatile and fun addition to your Discord experience, packed with various commands to entertain and assist you. Once added to your account, you can use it anywhere within your servers.
+A lite version of PotatoBot. For those who do not want the full PotatoBot experience.
+Only has fun and utility, featuring __0%__ bloat!!!1!
 
 ## Getting Started
 
@@ -13,7 +14,11 @@ To add the bot to your account, use the following [authorization link](https://d
 
 ## Installation
 
-To set up and run the bot locally, follow these steps:
+> Requirements:
+> - NodeJS
+> - NPM
+
+Run the following commands to run the bot yourself
 
 ```sh
 # Clone the repository
@@ -28,8 +33,6 @@ npm install
 # Run the bot
 node .
 ```
-
-Ensure you have Node.js and npm installed on your machine.
 
 ## Contributing
 
